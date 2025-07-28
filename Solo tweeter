@@ -1,0 +1,53 @@
+from replit import db 
+import datetime, os, time
+
+
+def addTweet():
+  tweet = input("Your Tweet\n>").strip().title()
+  timestamp = datetime.datetime.now()
+  key = f"mes{timestamp}"
+  db[key] = tweet
+  time.sleep(1)
+  os.system("clear")
+
+def deleteTweet():
+  tweetD = input("Which Tweet would you like to delete?\n> ").strip().title()
+  for key in db.prefix("mes"):
+    if db[key] == tweetD:
+      confirm = input(f"Are you sure you want delete: {db[key]}? Y/N\n> ").strip().lower()
+      if confirm == "y":
+        del db[key]
+        print("deleted")
+        time.sleep(1)
+        os.system("clear")
+        return
+      else:
+        print("Delete cancelled")
+        return
+
+def viewTweet():
+  matches = db.prefix("mes")
+  matches = matches[::-1]
+  counter = 0
+  for i in matches:
+    print(db[i])
+    print()
+    time.sleep(0.4)
+    counter += 1
+    if (counter%10 == 0):
+      keepG = input("Next 10? Y/N \n> ").strip()
+      if (keepG.lower() == "n"):
+        break
+
+while True:
+  print("TWEETER")
+  print()
+  menu = input("Add = A, Delete = D or View = V Tweets\n> ").strip().lower()
+  if menu == "a":
+    addTweet()
+  
+  elif menu == "d":
+    deleteTweet()
+    
+  elif menu == "v":
+    viewTweet()
